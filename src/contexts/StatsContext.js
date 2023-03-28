@@ -46,6 +46,8 @@ const StatsContextProvider = ({ children }) => {
     setBookings(result?.data)
   }
 
+  console.log(bookings)
+
   useEffect(() => {
     if(!userDetails) return
     fetchBuses()
@@ -62,7 +64,8 @@ const StatsContextProvider = ({ children }) => {
       bookings,
       fetchRoutes,
       fetchTerminal,
-      fetchBuses
+      fetchBuses,
+      fetchBooking
     }}> 
       {children} 
     </StatsContext.Provider> 

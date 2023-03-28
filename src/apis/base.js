@@ -22,6 +22,7 @@ export const DELETE_TERMINAL_ENDPOINT = BASE_URL + "/terminal/:id"
 
 // BOOKING
 export const ALL_BOOKING_ENDPOINT = BASE_URL + "/booking"
+export const DELETE_BOOKING_ENDPOINT = BASE_URL + "/booking/:id"
 
 
 

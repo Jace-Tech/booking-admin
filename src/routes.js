@@ -20,6 +20,7 @@ import Route from "views/examples/Route";
 import Login from "views/examples/Login";
 import Register from "views/examples/Register";
 import Terminal from "views/examples/Terminal";
+import Booking from "views/examples/Booking";
 
 
 var routes = [
@@ -80,6 +81,13 @@ export const dashRoutes = [
     name: "Terminal",
     icon: "ni ni-pin-3 text-orange",
     component: Terminal,
+    layout: "/admin",
+  },
+  {
+    path: "/bookings",
+    name: "Booking",
+    icon: "ni ni-collection text-purple",
+    component: Booking,
     layout: "/admin",
   },
 ];
