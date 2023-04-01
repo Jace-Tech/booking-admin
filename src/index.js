@@ -12,9 +12,12 @@ import AuthLayout from "layouts/Auth.js";
 import { Provider } from "react-redux";
 import store from "store";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 import UserContextProvider from "contexts/UserContext";
 import StatsContextProvider from "contexts/StatsContext";
+import TerminalContextProvider from "contexts/TerminalContext";
+import RouteContextProvider from "contexts/RouteContext";
+import BusContextProvider from "contexts/BusContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -22,12 +25,27 @@ root.render(
     <Provider store={store}>
       <UserContextProvider>
         <StatsContextProvider>
-          <ToastContainer />
-          <Switch>
-            <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-            <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-            <Redirect from="/" to="/admin/index" />
-          </Switch>
+          
+            <ToastContainer />
+            <Switch>
+              <Route
+                path="/admin"
+                render={(props) => 
+                  <TerminalContextProvider>
+                    <RouteContextProvider>
+                      <BusContextProvider>
+                        <AdminLayout {...props} />
+                      </BusContextProvider>
+                    </RouteContextProvider>
+                  </TerminalContextProvider>
+              }
+              />
+              <Route
+                path="/auth"
+                render={(props) => <AuthLayout {...props} />}
+              />
+              <Redirect from="/" to="/admin/index" />
+            </Switch>
         </StatsContextProvider>
       </UserContextProvider>
     </Provider>

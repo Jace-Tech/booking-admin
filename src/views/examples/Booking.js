@@ -18,6 +18,7 @@ import { logMessage } from 'config/functions';
 import { toast } from 'react-toastify';
 import { getMatch } from 'config/functions';
 import { handleDeleteBooking } from 'apis/booking.api';
+import { Link } from 'react-router-dom';
 
 const Booking = () => {
   const { bookings, fetchBooking, terminals } = useStatsContext()
@@ -92,7 +93,11 @@ const Booking = () => {
                           {bookings && bookings.length ? (
                             bookings.map((booking, _index) => (
                               <tr>
-                                <th>{booking?.ticketId}</th>
+                                <th>
+                                  <Link to={`/admin/booking-details/${booking?._id}`} className='text-primary'>
+                                    {booking?.ticketId}
+                                  </Link>
+                                </th>
                                 <th>
                                   {getMatch(terminals ?? [], "_id", booking?.route?.from)
                                     ? getMatch(terminals ?? [], "_id", booking?.route?.from )["name"]

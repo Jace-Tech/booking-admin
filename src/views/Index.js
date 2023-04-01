@@ -151,7 +151,7 @@ const Index = (props) => {
                         className={"text-center text-muted"}
                         scope="row"
                       >
-                        No Routes Found
+                        No Terminal Found
                       </th>
                     </tr>
                   )}

@@ -22,12 +22,17 @@ import { handleDeleteRoute } from 'apis/route.api';
 import useBoolean from 'hooks/useBoolean';
 import { logMessage } from 'config/functions';
 import { toast } from 'react-toastify';
+import { useRouteContext } from 'contexts/RouteContext';
+import EditRoute from 'partials/EditRoute';
+import { useHistory } from 'react-router-dom';
 
 const Route = () => {
   const {open, close, bool} = useBoolean()
   const [index, setIndex] = useState(null)
   const { routes, fetchRoutes } = useStatsContext()
   const [routeId, setRouteId] = useState(null)
+  const { routeEdit, setRouteEdit } = useRouteContext()
+  const history = useHistory()
 
   const handleDelete = async (id, _index) => {
     setIndex(_index)
@@ -54,6 +59,12 @@ const Route = () => {
     setIndex(null)
   }
 
+  const handleInitiateEdit = (id) => {
+    const route = routes.find(_route => _route._id === id)
+    if(!route) return
+    setRouteEdit(route)
+  }
+
   return (
     <>
       <Header />
@@ -68,96 +79,125 @@ const Route = () => {
               </CardHeader>
               <CardBody>
                 <Row>
-                  {routeId ? (
-                    <AddBus
-                      routeId={routeId}
-                      handleFinish={() => setRouteId(null)}
-                    />
-                  ) : (
-                    <AddRoute />
-                  )}
+                { routeEdit ? (
+                  <EditRoute 
+                    handleFinish={() => setRouteEdit(null)}
+                    routeEdit={routeEdit} 
+                  />
+                ) : (
+                  <>
+                    {routeId ? (
+                      <AddBus
+                        routeId={routeId}
+                        handleFinish={() => setRouteId(null)}
+                      />
+                    ) : (
+                      <AddRoute />
+                    )}
 
-                  <Col className="mb-5 mb-xl-0" xl="12">
-                    <Card className="shadow mt-4">
-                      <CardHeader className="border-0">
-                        <Row className="align-items-center">
-                          <div className="col">
-                            <h3 className="mb-0">All Routes</h3>
-                          </div>
-                        </Row>
-                      </CardHeader>
-                      <Table
-                        className="align-items-center table-flush"
-                        responsive
-                      >
-                        <thead className="thead-light">
-                          <tr>
-                            <th scope="col">From</th>
-                            <th scope="col">To</th>
-                            <th scope="col">AC Price</th>
-                            <th scope="col">Non AC Price</th>
-                            <th scope="col">Buses</th>
-                            <th scope="col"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {routes && routes?.length ? (
-                            routes?.map((route, _index) => (
-                              <tr>
-                                <th>{route?.from.name}</th>
-                                <th>{route?.to.name}</th>
-                                <td>
-                                  &#8358; {(+route?.acPrice).toLocaleString()}
-                                </td>
-                                <td>
-                                  &#8358; {(+route?.nonAcPrice).toLocaleString()}
-                                </td>
-                                <td>{route?.buses.length}</td>
-                                <td>
-                                  <div className="d-flex align-items-center">
-                                    <Button
-                                      className=""
-                                      color="primary"
-                                      size="sm"
-                                      onClick={() => {
-                                        setRouteId(route?._id);
-                                        window.scrollTo(0, 0);
-                                      }}
-                                    >
-                                      Add Bus
-                                    </Button>
-
-                                    <Button
-                                      disabled={bool}
-                                      color="danger"
-                                      size="sm"
-                                      onClick={() =>
-                                        handleDelete(route?._id, _index)
-                                      }
-                                    >
-                                      {bool && index === _index
-                                        ? "Deleting..."
-                                        : "Delete Route"}
-                                    </Button>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
+                    <Col className="mb-5 mb-xl-0" xl="12">
+                      <Card className="shadow mt-4">
+                        <CardHeader className="border-0">
+                          <Row className="align-items-center">
+                            <div className="col">
+                              <h3 className="mb-0">All Routes</h3>
+                            </div>
+                          </Row>
+                        </CardHeader>
+                        <Table
+                          className="align-items-center table-flush"
+                          responsive
+                        >
+                          <thead className="thead-light">
                             <tr>
-                              <th
-                                colSpan={7}
-                                className={"text-center text-muted"}
-                                scope="row"
-                              >
-                                No Routes Found
-                              </th>
+                              <th scope="col">From</th>
+                              <th scope="col">To</th>
+                              <th scope="col">AC Price</th>
+                              <th scope="col">Non AC Price</th>
+                              <th scope="col">Buses</th>
+                              <th scope="col"></th>
                             </tr>
-                          )}
-                        </tbody>
-                      </Table>
-                    </Card>
-                  </Col>
+                          </thead>
+                          <tbody>
+                            {routes && routes?.length ? (
+                              routes?.map((route, _index) => (
+                                <tr>
+                                  <th>{route?.from.name}</th>
+                                  <th>{route?.to.name}</th>
+                                  <td>
+                                    &#8358; {(+route?.acPrice).toLocaleString()}
+                                  </td>
+                                  <td>
+                                    &#8358; {(+route?.nonAcPrice).toLocaleString()}
+                                  </td>
+                                  <td>{route?.buses.length}</td>
+                                  <td>
+                                    <div className="d-flex align-items-center">
+                                      {/* <Button
+                                        className=""
+                                        color="primary"
+                                        size="sm"
+                                        onClick={() => {
+                                          setRouteId(route?._id);
+                                          window.scrollTo(0, 0);
+                                        }}
+                                      >
+                                        Add Bus
+                                      </Button> */}
+
+                                      <Button
+                                        disabled={bool}
+                                        color="info"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleInitiateEdit(route?._id)
+                                        }
+                                      > Edit Route</Button>
+
+                                      <Button
+                                        disabled={bool}
+                                        color="danger"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleDelete(route?._id, _index)
+                                        }
+                                      >
+                                        {bool && index === _index
+                                          ? "Deleting..."
+                                          : "Delete Route"}
+                                      </Button>
+
+
+                                      <Button
+                                        disabled={bool}
+                                        color="primary"
+                                        size="sm"
+                                        onClick={() =>
+                                          history.push(`/admin/manage-buses/${route._id}`)
+                                        }
+                                      > Manage Buses </Button>
+
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <th
+                                  colSpan={7}
+                                  className={"text-center text-muted"}
+                                  scope="row"
+                                >
+                                  No Routes Found
+                                </th>
+                              </tr>
+                            )}
+                          </tbody>
+                        </Table>
+                      </Card>
+                    </Col>
+                  </>
+                ) }
                 </Row>
               </CardBody>
             </Card>

@@ -1,6 +1,6 @@
 import { STORAGE_NAME } from "config";
 import { logMessage } from "config/functions";
-import { CREATE_TERMINAL_ENDPOINT, DELETE_TERMINAL_ENDPOINT } from "./base";
+import { CREATE_TERMINAL_ENDPOINT, DELETE_TERMINAL_ENDPOINT, UPDATE_TERMINAL_ENDPOINT } from "./base";
 
 
 export const handleDeleteTerminal = async (id) => {
@@ -18,6 +18,31 @@ export const handleDeleteTerminal = async (id) => {
 
   try {
     const request = await fetch(DELETE_TERMINAL_ENDPOINT.replace(":id", id), options);
+    const response = await request.json();
+    logMessage(response);
+    return response
+  } catch (error) {
+    logMessage({error})
+    return {success: false, message: error.message, data: null}
+  }
+}
+
+export const handleUpdateTerminal = async (id, data) => {
+  let token = localStorage.getItem(STORAGE_NAME)
+  if(!token) return {success: false, message: "Failed to fetch", data: null}
+  token = JSON.parse(token)['token']
+
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    }
+  }
+
+  try {
+    const request = await fetch(UPDATE_TERMINAL_ENDPOINT.replace(":id", id), options);
     const response = await request.json();
     logMessage(response);
     return response

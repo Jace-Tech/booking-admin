@@ -46,7 +46,7 @@ const StatsContextProvider = ({ children }) => {
     setBookings(result?.data)
   }
 
-  console.log(bookings)
+ logMessage(bookings)
 
   useEffect(() => {
     if(!userDetails) return
